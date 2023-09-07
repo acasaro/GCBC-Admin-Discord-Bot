@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("node:path");
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, Permissions } = require("discord.js");
 const { config } = require("./config");
 const { token } = config;
 const { logDiscord } = require("./common/utility-logging");

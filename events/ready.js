@@ -7,7 +7,8 @@ module.exports = {
   once: true,
   async execute(client) {
     try {
-      // deployCommands("1116106510414647326");
+      // deployCommands("1116106510414647326"); //TEST
+      // deployCommands("819348511090016257"); //LIVE
     } catch (error) {
       logError("Unable to connect to the database:", error);
     }
