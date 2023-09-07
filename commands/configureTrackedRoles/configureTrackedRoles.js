@@ -1,18 +1,18 @@
 /**
- * @file configure
+ * @file configureTrackedRoles
  * @type Slash Command
  * @description Example slash command.
  */
 
-const { SlashCommandBuilder, roleMention } = require("discord.js");
+const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
-  name: "configure",
+  name: "configure-tracked-roles",
   description: "Setup bot configuration for tracking roles",
   guildOnly: true,
   data: new SlashCommandBuilder()
-    .setName("configure")
-    .setDescription("Setup bot configuration for tracking roles"),
+    .setName("configure-tracked-roles")
+    .setDescription("Select roles to track active members assigned to them"),
   async execute(interaction) {
     try {
       await require("../../select-menus/TrackRoleSelectMenu").execute(interaction);

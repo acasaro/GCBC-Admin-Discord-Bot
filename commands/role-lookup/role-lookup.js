@@ -5,14 +5,8 @@
  */
 
 const { SlashCommandBuilder } = require("discord.js");
+const { getTrackedRoles } = require("../../server/firebase");
 // const { getUserRankedRole } = require('../../common/utility-functions');
-
-const currentCoaches = [
-  { name: "Active Students Curtis", id: "1089971869471481996", key: "curtis" },
-  { name: "Active Students Puf", id: "1101518858298331247", key: "puf" },
-  { name: "Active Students Nytro", id: "1089973607960154283", key: "nytro" },
-  { name: "Active Students Comp", id: "1089973854987882617", key: "comp" },
-];
 
 module.exports = {
   name: "role-lookup",
@@ -20,7 +14,7 @@ module.exports = {
   guildOnly: true,
   data: new SlashCommandBuilder()
     .setName("role-lookup")
-    .setDescription("Lookup members assigned to role"),
+    .setDescription("Manually sync to Google Sheets"),
   async execute(interaction) {
     const { client } = interaction;
 
@@ -29,13 +23,13 @@ module.exports = {
 
     try {
       await guild.members.fetch();
-
+      const settings = await getTrackedRoles();
       const result = {};
 
-      for (let i = 0; i < currentCoaches.length; i++) {
-        const currentRole = currentCoaches[i];
-        const roleId = currentRole.id;
-        const key = currentRole.key;
+      for (let i = 0; i < settings.tracked_roles.length; i++) {
+        const role = settings.tracked_roles[i];
+        const roleId = role.discord_role_id;
+        const key = role.key;
 
         // Find members with the specified role
         let getAllRoleMembers = guild.roles.cache
@@ -44,7 +38,6 @@ module.exports = {
 
         result[key] = getAllRoleMembers;
       }
-      console.log(JSON.stringify(result));
       await interaction.reply({
         content: `Done `,
         ephemeral: true,

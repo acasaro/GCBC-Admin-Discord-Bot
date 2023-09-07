@@ -21,6 +21,17 @@ async function setTrackedRoles(trackedRoles) {
   }
 }
 
+async function getTrackedRoles() {
+  try {
+    const snapshot = await db.collection("settings").doc("gcbc_settings").get();
+
+    return snapshot.data();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   setTrackedRoles,
+  getTrackedRoles,
 };

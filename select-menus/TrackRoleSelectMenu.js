@@ -17,7 +17,7 @@ module.exports = {
       const row = new ActionRowBuilder().addComponents(selectMenu);
 
       await interaction.reply({
-        content: "Select a role to track members under.",
+        content: "Select up to 10 roles to track.",
         components: [row],
         ephemeral: true,
       });

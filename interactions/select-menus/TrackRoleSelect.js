@@ -1,5 +1,6 @@
 const { roleMention } = require("discord.js");
 const { setTrackedRoles } = require("../../server/firebase");
+const { snakeCase } = require("lodash");
 
 /**
  * @name TrackRoleSelect
@@ -23,7 +24,11 @@ module.exports = {
 
       const trackedRoles = selectedRoles.map((role) => {
         const roleData = guild.roles.cache.get(role);
-        return { name: roleData?.name, discord_role_id: roleData?.id };
+        return {
+          name: roleData?.name,
+          discord_role_id: roleData?.id,
+          key: snakeCase(roleData?.name),
+        };
       });
 
       // Update Firebase
