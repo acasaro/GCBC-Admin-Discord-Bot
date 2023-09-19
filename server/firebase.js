@@ -1,7 +1,7 @@
 const { initializeApp, applicationDefault, cert } = require("firebase-admin/app");
 const { getFirestore, Timestamp, FieldValue, Filter } = require("firebase-admin/firestore");
 
-const serviceAccount = require("./gcbc-admin-bot-e5e546b32477.json");
+const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 initializeApp({
   credential: cert(serviceAccount),
@@ -31,7 +31,41 @@ async function getTrackedRoles() {
   }
 }
 
+async function loadSavedCredentialsIfExist() {
+  try {
+    const snapshot = await db.collection("settings").doc("gcbc_settings").get();
+    const googleAccessToken = snapshot.data()?.googleAccessToken;
+    const googleRefreshToken = snapshot.data()?.googleRefreshToken;
+    if (!googleAccessToken || !googleRefreshToken) {
+      return null;
+    }
+
+    return { googleAccessToken, googleRefreshToken };
+  } catch (err) {
+    return null;
+  }
+}
+
+async function saveCredentials(googleAccessToken, googleRefreshToken) {
+  if (!googleRefreshToken && !googleAccessToken) {
+    return console.log("RefreshToken & AccessToken missing and not saved");
+  }
+  try {
+    return db.collection("settings").doc("gcbc_settings").set(
+      {
+        googleRefreshToken,
+        googleAccessToken,
+      },
+      { merge: true }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   setTrackedRoles,
   getTrackedRoles,
+  loadSavedCredentialsIfExist,
+  saveCredentials,
 };
