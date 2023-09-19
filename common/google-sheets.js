@@ -1,7 +1,5 @@
 const { google } = require("googleapis");
-const { loadSavedCredentialsIfExist } = require("../server/firebase");
-
-const spreadsheetId = process.env.SHEET_ID;
+const { loadSavedCredentialsIfExist, getTrackedRoles } = require("../server/firebase");
 
 /**
  * Load or request or authorization to call APIs.
@@ -39,6 +37,11 @@ async function authorize() {
  *
  */
 async function getSheet(range) {
+  const config = await getTrackedRoles();
+  const spreadsheetId = config?.sheet_id;
+  if (!spreadsheetId) {
+    return null;
+  }
   const sheets = await authorize();
 
   const res = await sheets.spreadsheets.values.get({
@@ -67,6 +70,12 @@ async function getSheet(range) {
  * @return {obj} spreadsheet information
  */
 async function updateValues(range, valueInputOption, _values) {
+  const config = await getTrackedRoles();
+
+  const spreadsheetId = config?.sheet_id;
+  if (!spreadsheetId) {
+    return null;
+  }
   const service = await authorize();
   if (!service) {
     return null;
