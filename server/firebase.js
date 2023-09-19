@@ -1,7 +1,7 @@
 const { initializeApp, applicationDefault, cert } = require("firebase-admin/app");
 const { getFirestore, Timestamp, FieldValue, Filter } = require("firebase-admin/firestore");
 
-const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
 initializeApp({
   credential: cert(serviceAccount),
@@ -16,6 +16,19 @@ async function setTrackedRoles(trackedRoles) {
     return db.collection("settings").doc("gcbc_settings").set({
       tracked_roles: trackedRoles,
     });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function updateGoogleSheetId(sheetId) {
+  try {
+    return db.collection("settings").doc("gcbc_settings").set(
+      {
+        sheet_id: sheetId,
+      },
+      { merge: true }
+    );
   } catch (error) {
     console.log(error);
   }
@@ -68,4 +81,5 @@ module.exports = {
   getTrackedRoles,
   loadSavedCredentialsIfExist,
   saveCredentials,
+  updateGoogleSheetId,
 };
