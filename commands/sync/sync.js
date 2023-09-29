@@ -7,6 +7,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { getTrackedRoles } = require("../../server/firebase");
 const { getSheet, updateValues } = require("../../common/google-sheets");
+const { config } = require("../../config");
 
 module.exports = {
   name: "sync-google-sheet",
@@ -40,7 +41,7 @@ module.exports = {
 
       if (update == null) {
         return await interaction.reply({
-          content: `Click the link to authorize bot to update Google Sheets: http://localhost:3000/discord/callback`,
+          content: `Click the link to authorize bot to update Google Sheets: ${config.serverUrl}/discord/callback`,
           ephemeral: true,
         });
       } else {
@@ -53,7 +54,7 @@ module.exports = {
       // console.log(error.response.statusText);
       if (error?.response?.statusText === "Unauthorized") {
         return await interaction.reply({
-          content: `Click the link to authorize bot to update Google Sheets: http://localhost:3000/discord/callback`,
+          content: `Click the link to authorize bot to update Google Sheets: ${config.serverUrl}/discord/callback`,
           ephemeral: true,
         });
       } else {

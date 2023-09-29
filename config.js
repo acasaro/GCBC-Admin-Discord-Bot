@@ -4,6 +4,7 @@ const config = {
   token: "Discord Application Token",
   clientId: "Discord applications client id",
   guildId: "Your development server's id",
+  serverUrl: "Your Server domain",
 };
 
 if (process.env.NODE_ENV === "development") {
