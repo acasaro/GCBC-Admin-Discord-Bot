@@ -7,7 +7,7 @@ server.all("/", (req, res) => {
   res.send("Result: [OK]");
 });
 
-const redirectUriDiscord = "http://localhost:3000/discord/callback";
+const redirectUriDiscord = `${config.serverUrl}/discord/callback`;
 const discordScopes = ["bot", "identify"]; // Discord OAuth2 scopes
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -21,7 +21,7 @@ server.get("/discord/callback", async (req, res) => {
 
   // Redirect to Google OAuth2 URL
   const googleScopes = ["https://www.googleapis.com/auth/spreadsheets"]; // Google OAuth2 scopes
-  const redirectUriGoogle = "http://localhost:3000/google/callback";
+  const redirectUriGoogle = `${config.serverUrl}/google/callback`;
   const googleOAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${googleClientId}&scope=${googleScopes.join(
     "%20"
   )}&redirect_uri=${redirectUriGoogle}&response_type=code`;
@@ -34,7 +34,7 @@ server.get("/google/callback", async (req, res) => {
   const googleCode = req.query.code;
 
   // Exchange the Google authorization code for an access token and possibly a refresh token
-  const googleRedirectUri = "http://localhost:3000/google/callback";
+  const googleRedirectUri = `${config.serverUrl}/google/callback`;
 
   const tokenResponse = await fetch("https://accounts.google.com/o/oauth2/token", {
     method: "POST",
@@ -64,7 +64,7 @@ server.get("/google/callback", async (req, res) => {
 });
 
 function keepAlive() {
-  server.listen(3000, () => {
+  server.listen(25202, () => {
     console.log("Server is now ready! | " + Date.now());
   });
 }

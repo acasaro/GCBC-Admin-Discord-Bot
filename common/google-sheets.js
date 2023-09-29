@@ -1,4 +1,6 @@
 const { google } = require("googleapis");
+const { authenticate } = require("@google-cloud/local-auth");
+
 const { loadSavedCredentialsIfExist, getTrackedRoles } = require("../server/firebase");
 
 /**
@@ -7,25 +9,25 @@ const { loadSavedCredentialsIfExist, getTrackedRoles } = require("../server/fire
  */
 async function authorize() {
   try {
-    const auth = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      "http://localhost"
-    );
-    const credential = await loadSavedCredentialsIfExist();
-    if (!credential) {
-      return null;
+    // const auth = new google.auth.OAuth2(
+    //   process.env.GOOGLE_CLIENT_ID,
+    //   process.env.GOOGLE_CLIENT_SECRET,
+    //   "http://78.108.218.36:25202/"
+    // );
+    const client = await loadSavedCredentialsIfExist();
+    if (client) {
+      return client;
     }
+    // google.auth.fromJSON(credentials);
+    // // auth.setCredentials({ access_token: credential?.googleAccessToken });
 
-    auth.setCredentials({ access_token: credential?.googleAccessToken });
+    // // const auth = await google.auth.getClient({
+    // //   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    // // });
 
-    // const auth = await google.auth.getClient({
-    //   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-    // });
+    // const sheets = google.sheets({ version: "v4", auth });
 
-    const sheets = google.sheets({ version: "v4", auth });
-
-    return sheets;
+    // return sheets;
   } catch (error) {
     console.log(error);
   }
@@ -40,26 +42,27 @@ async function getSheet(range) {
   const config = await getTrackedRoles();
   const spreadsheetId = config?.sheet_id;
   if (!spreadsheetId) {
+    console.log("spreadsheetId is undefined");
     return null;
   }
   const sheets = await authorize();
 
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: "Active Clients",
-  });
+  // const res = await sheets.spreadsheets.values.get({
+  //   spreadsheetId,
+  //   range: "Active Clients",
+  // });
 
-  const rows = res.data.values;
-  if (!rows || rows.length === 0) {
-    console.log("No data found.");
-    return;
-  }
+  // const rows = res.data.values;
+  // if (!rows || rows.length === 0) {
+  //   console.log("No data found.");
+  //   return;
+  // }
 
-  rows.forEach((col) => {
-    // Print columns A, B and C, which correspond to indices 0-2.
-    console.log(`${col[0]}, ${col[1]}, ${col[2]}`);
-  });
-  return;
+  // rows.forEach((col) => {
+  //   // Print columns A, B and C, which correspond to indices 0-2.
+  //   console.log(`${col[0]}, ${col[1]}, ${col[2]}`);
+  // });
+  // return;
 }
 
 /**

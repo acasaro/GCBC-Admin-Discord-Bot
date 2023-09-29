@@ -18,24 +18,25 @@ module.exports = {
   async execute(interaction) {
     const { client } = interaction;
     const guildId = interaction.guild.id;
-    const guild = await client.guilds.cache.get(guildId);
+    const guild = await client.guilds.fetch(guildId);
+    const roles = await guild.roles.fetch(); // Fetch the latest roles data
 
     try {
       await guild.members.fetch();
+      await guild.roles.fetch();
+
       const settings = await getTrackedRoles();
       const values = [];
-
       for (let i = 0; i < settings.tracked_roles.length; i++) {
         const role = settings.tracked_roles[i];
         const roleId = role.discord_role_id;
         const key = role.key;
 
         // Find members with the specified role
-        guild.roles.cache
-          .get(roleId)
-          .members.forEach((m) => values.push([key, m.user.tag, m.user.id]));
+        roles.get(roleId).members.forEach((m) => values.push([key, m.user.tag, m.user.id]));
       }
-
+      console.log({ test, count: test.length });
+      // console.log(values);
       const update = await updateValues("Active Clients!A2", "RAW", values);
 
       if (update == null) {
@@ -45,7 +46,7 @@ module.exports = {
         });
       } else {
         await interaction.reply({
-          content: `Sheet successfully updated! `,
+          content: `Sheet successfully updated!`,
           ephemeral: true,
         });
       }
