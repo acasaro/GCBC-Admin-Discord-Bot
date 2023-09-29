@@ -35,7 +35,6 @@ module.exports = {
         // Find members with the specified role
         roles.get(roleId).members.forEach((m) => values.push([key, m.user.tag, m.user.id]));
       }
-      console.log({ test, count: test.length });
       // console.log(values);
       const update = await updateValues("Active Clients!A2", "RAW", values);
 
