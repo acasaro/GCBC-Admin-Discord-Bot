@@ -80,34 +80,35 @@ async function updateValues(range, valueInputOption, _values) {
     return null;
   }
   const service = await authorize();
-  if (!service) {
-    return null;
-  }
+  console.log(service);
+  // if (!service) {
+  //   return null;
+  // }
 
-  let values = _values;
-  const data = [
-    {
-      range,
-      values,
-    },
-  ];
-  // Additional ranges to update ...
-  const resource = {
-    data,
-    valueInputOption,
-  };
-  try {
-    const result = await service.spreadsheets.values.batchUpdate({
-      spreadsheetId,
-      resource,
-    });
+  // let values = _values;
+  // const data = [
+  //   {
+  //     range,
+  //     values,
+  //   },
+  // ];
+  // // Additional ranges to update ...
+  // const resource = {
+  //   data,
+  //   valueInputOption,
+  // };
+  // try {
+  //   const result = await service.spreadsheets.values.batchUpdate({
+  //     spreadsheetId,
+  //     resource,
+  //   });
 
-    console.log("%d cells updated.", result.data.updatedCells);
-    return result;
-  } catch (err) {
-    // TODO (Developer) - Handle exception
-    throw err;
-  }
+  //   console.log("%d cells updated.", result.data.updatedCells);
+  //   return result;
+  // } catch (err) {
+  //   // TODO (Developer) - Handle exception
+  //   throw err;
+  // }
 }
 
 module.exports = {
