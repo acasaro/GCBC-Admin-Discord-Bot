@@ -2,6 +2,7 @@ const express = require("express");
 const server = express();
 const fetch = require("node-fetch");
 const { saveCredentials } = require("./firebase");
+const { config } = require("../config");
 
 server.all("/", (req, res) => {
   res.send("Result: [OK]");
