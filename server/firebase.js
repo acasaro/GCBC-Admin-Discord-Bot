@@ -53,15 +53,7 @@ async function loadSavedCredentialsIfExist() {
       return null;
     }
 
-    const content = JSON.stringify({
-      type: "authorized_user",
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      refresh_token: googleRefreshToken,
-    });
-    const credentials = JSON.parse(content);
-
-    return credentials;
+    return { googleAccessToken, googleRefreshToken };
   } catch (err) {
     return null;
   }

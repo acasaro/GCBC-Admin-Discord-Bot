@@ -12,11 +12,13 @@ if (process.env.NODE_ENV === "development") {
   config.clientId = process.env.TEST_CLIENT_ID;
   config.guildId = process.env.TEST_GUILD_ID;
   config.serverUrl = process.env.SERVER_URL_DEV;
+  config.googleServiceAccountv = process.env.GOOGLE_SHEET_SERVICE_ACCOUNT;
 } else {
   config.token = process.env.TOKEN;
   config.clientId = process.env.CLIENT_ID;
   config.guildId = process.env.GUILD_ID;
   config.serverUrl = process.env.SERVER_URL_LIVE;
+  config.googleServiceAccountv = process.env.GOOGLE_SHEET_SERVICE_ACCOUNT;
 }
 
 module.exports = { config };

@@ -36,12 +36,12 @@ module.exports = {
         // Find members with the specified role
         roles.get(roleId).members.forEach((m) => values.push([key, m.user.tag, m.user.id]));
       }
-      // console.log(values);
+
       const update = await updateValues("Active Clients!A2", "RAW", values);
 
       if (update == null) {
         return await interaction.reply({
-          content: `Click the link to authorize bot to update Google Sheets: ${config.serverUrl}/discord/callback`,
+          content: `There is an issue accessing the Google sheet`,
           ephemeral: true,
         });
       } else {
@@ -54,7 +54,7 @@ module.exports = {
       // console.log(error.response.statusText);
       if (error?.response?.statusText === "Unauthorized") {
         return await interaction.reply({
-          content: `Click the link to authorize bot to update Google Sheets: ${config.serverUrl}/discord/callback`,
+          content: `Unauthorized Google API issue`,
           ephemeral: true,
         });
       } else {

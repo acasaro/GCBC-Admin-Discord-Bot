@@ -1,5 +1,4 @@
 const { google } = require("googleapis");
-const { authenticate } = require("@google-cloud/local-auth");
 
 const { loadSavedCredentialsIfExist, getTrackedRoles } = require("../server/firebase");
 
@@ -9,25 +8,29 @@ const { loadSavedCredentialsIfExist, getTrackedRoles } = require("../server/fire
  */
 async function authorize() {
   try {
-    // const auth = new google.auth.OAuth2(
-    //   process.env.GOOGLE_CLIENT_ID,
-    //   process.env.GOOGLE_CLIENT_SECRET,
-    //   "http://78.108.218.36:25202/"
+    const auth = await google.auth.getClient({
+      keyFile: "google-api-credentials.json",
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
+
+    // const auth = new google.auth.GoogleAuth(
+    //   {keyFile: "google-api-credentials.json",
+    //   scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],}
     // );
-    const client = await loadSavedCredentialsIfExist();
-    if (client) {
-      return client;
-    }
-    // google.auth.fromJSON(credentials);
-    // // auth.setCredentials({ access_token: credential?.googleAccessToken });
+    // const credential = await loadSavedCredentialsIfExist();
+    // if (!credential) {
+    //   return null;
+    // }
 
-    // // const auth = await google.auth.getClient({
-    // //   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-    // // });
+    // auth.setCredentials({ access_token: credential?.googleAccessToken });
 
-    // const sheets = google.sheets({ version: "v4", auth });
+    // const auth = await google.auth.getClient({
+    //   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    // });
 
-    // return sheets;
+    const sheets = google.sheets({ version: "v4", auth });
+
+    return sheets;
   } catch (error) {
     console.log(error);
   }
@@ -42,27 +45,26 @@ async function getSheet(range) {
   const config = await getTrackedRoles();
   const spreadsheetId = config?.sheet_id;
   if (!spreadsheetId) {
-    console.log("spreadsheetId is undefined");
     return null;
   }
   const sheets = await authorize();
 
-  // const res = await sheets.spreadsheets.values.get({
-  //   spreadsheetId,
-  //   range: "Active Clients",
-  // });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: "Active Clients",
+  });
 
-  // const rows = res.data.values;
-  // if (!rows || rows.length === 0) {
-  //   console.log("No data found.");
-  //   return;
-  // }
+  const rows = res.data.values;
+  if (!rows || rows.length === 0) {
+    console.log("No data found.");
+    return;
+  }
 
-  // rows.forEach((col) => {
-  //   // Print columns A, B and C, which correspond to indices 0-2.
-  //   console.log(`${col[0]}, ${col[1]}, ${col[2]}`);
-  // });
-  // return;
+  rows.forEach((col) => {
+    // Print columns A, B and C, which correspond to indices 0-2.
+    console.log(`${col[0]}, ${col[1]}, ${col[2]}`);
+  });
+  return;
 }
 
 /**
@@ -77,38 +79,38 @@ async function updateValues(range, valueInputOption, _values) {
 
   const spreadsheetId = config?.sheet_id;
   if (!spreadsheetId) {
+    console.log("Spreadsheet ID not set. Please run and configure /sheet-id to run this command");
     return null;
   }
   const service = await authorize();
-  console.log(service);
-  // if (!service) {
-  //   return null;
-  // }
 
-  // let values = _values;
-  // const data = [
-  //   {
-  //     range,
-  //     values,
-  //   },
-  // ];
-  // // Additional ranges to update ...
-  // const resource = {
-  //   data,
-  //   valueInputOption,
-  // };
-  // try {
-  //   const result = await service.spreadsheets.values.batchUpdate({
-  //     spreadsheetId,
-  //     resource,
-  //   });
+  if (!service) {
+    return null;
+  }
+  let values = _values;
+  const data = [
+    {
+      range,
+      values,
+    },
+  ];
+  // Additional ranges to update ...
+  const resource = {
+    data,
+    valueInputOption,
+  };
+  try {
+    const result = await service.spreadsheets.values.batchUpdate({
+      spreadsheetId,
+      resource,
+    });
 
-  //   console.log("%d cells updated.", result.data.updatedCells);
-  //   return result;
-  // } catch (err) {
-  //   // TODO (Developer) - Handle exception
-  //   throw err;
-  // }
+    console.log("%d cells updated.", result.data.updatedCells);
+    return result;
+  } catch (err) {
+    // TODO (Developer) - Handle exception
+    throw err;
+  }
 }
 
 module.exports = {
