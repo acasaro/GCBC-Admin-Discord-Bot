@@ -37,7 +37,7 @@ module.exports = {
         roles.get(roleId).members.forEach((m) => values.push([key, m.user.tag, m.user.id]));
       }
 
-      const update = await updateValues("Active Clients!A2", "RAW", values);
+      const update = await updateValues("Active_Clients!A2", "RAW", values);
 
       if (update == null) {
         return await interaction.reply({
