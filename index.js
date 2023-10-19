@@ -94,5 +94,18 @@ for (const module of selectMenus) {
   logDiscord(command.id, `Select menu`);
 }
 
+bot.on("messageCreate", async (message) => {
+  // Check if the message is from our bot and starts with the command prefix
+  if (
+    !message.author.username === "GCBC Coaching Tracker" ||
+    !message.content.startsWith("schedule-sync:")
+  ) {
+    return;
+  }
+  const command = bot.commands.get("sync-google-sheet");
+  return command.execute(message);
+  // return message.reply("Success - Document updated");
+});
+
 bot.login(token);
 keepAlive();

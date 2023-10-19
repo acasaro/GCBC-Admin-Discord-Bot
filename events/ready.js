@@ -6,6 +6,7 @@ module.exports = {
   name: Events.ClientReady,
   once: true,
   async execute(client) {
+    // const commands = await client.api.applications(client.user.id).commands.get();
     try {
       // deployCommands("1116106510414647326"); //TEST
       // deployCommands("819348511090016257"); //LIVE
