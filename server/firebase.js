@@ -15,7 +15,7 @@ async function setTrackedRoles(trackedRoles) {
 
     return db.collection("settings").doc("gcbc_settings").set({
       tracked_roles: trackedRoles,
-    });
+    }, {merge:true});
   } catch (error) {
     console.log(error);
   }
